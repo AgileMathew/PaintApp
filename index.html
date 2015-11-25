@@ -1,0 +1,149 @@
+<html>
+  <head>
+    <center> Paint App
+    </center>
+  </head>
+  <body>
+    <center>
+    <canvas id="canvas" width="600" height="600" style="border:3px solid black;"></canvas>
+    <center>
+      <button type= "button" onclick="line()">Line</button>
+      <button type= "button" onclick="rectangle()">Rect</button>	
+      <button type= "button" onclick="eraser()">Eraser</button>
+      <button type= "button" onclick="pencil()">Pencil</button>
+      <button type= "button" onclick="clearScreen()">Reset</button>
+        <script>
+          var fillFlag=0; 
+          var eraserWidth=10;
+          var c=document.getElementById("canvas");
+          var ctx=c.getContext("2d");
+        function clearScreen(){
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+        }  
+        
+        function eraser(){
+          canvas.onmousedown=eraserDown;
+          canvas.onmouseup=eraserUp;
+          canvas.onmousemove=eraserMove;
+          var draw=false; 
+          function eraserDown(e){
+            draw=true;
+          }
+          function eraserUp(e){
+            draw=false;
+          }
+          function eraserMove(e){
+            if(draw){
+              startX=e.clientX - canvas.getBoundingClientRect().left; 
+              startY=e.clientY - canvas.getBoundingClientRect().top;
+              ctx.clearRect(startX,startY,eraserWidth,eraserWidth);
+            }
+          }
+        }  
+        
+        
+        function pencil(){
+          canvas.onmousedown=pencildown;
+          canvas.onmouseup=pencilup;
+          canvas.onmousemove=pencilmove;
+          var drag=false;
+          function pencildown(e){
+            imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+            startX= e.x - this.offsetLeft;
+            startY=e.y - this.offsetTop;
+
+            drag=true;
+          }
+          function pencilup(){
+            drag=false;
+          }
+          function pencilmove(e){
+            if (drag){
+              newX=e.clientX - canvas.getBoundingClientRect().left; 
+              newY=e.clientY - canvas.getBoundingClientRect().top;
+              ctx.beginPath();
+              ctx.moveTo(startX,startY);
+              ctx.lineTo(newX,newY);
+              ctx.stroke();
+              ctx.closePath();
+              startX=newX;
+              startY=newY;
+            }
+          }
+
+        }
+
+        function line()
+        {
+          canvas.onmousedown=mouseDown;
+          canvas.onmousemove=mouseMove;
+          canvas.onmouseup=mouseUp;
+          var flag=false;
+          function mouseDown(event)
+          {
+            Data=ctx.getImageData(0,0,canvas.width,canvas.height)
+            startX=event.clientX-canvas.getBoundingClientRect().left;
+
+
+            startY=event.clientY-canvas.getBoundingClientRect().top;
+            flag=true;
+
+
+          }
+          function mouseMove(event)
+          {
+            if(flag){
+            ctx.putImageData(Data,0,0);
+            endX=event.clientX-canvas.getBoundingClientRect().left;
+            endY=event.clientY-canvas.getBoundingClientRect().top;
+            ctx.beginPath()
+            ctx.moveTo(startX,startY);
+            ctx.lineTo(endX,endY);
+            ctx.stroke();
+            ctx.closePath();
+
+              }
+          }
+          function mouseUp()
+          {
+            flag=false;
+          }
+                  }
+        function rectangle()
+        {              
+      
+            canvas.onmousedown=rectDown;
+            canvas.onmouseup=rectUp;
+            canvas.onmousemove=rectMove;
+            var flag=false;
+            function rectDown(e){
+                imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+                startX= e.x - this.offsetLeft;
+                startY=e.y - this.offsetTop;
+                flag=true;
+            }
+            function rectUp(e){
+              flag=false;
+            }
+            function rectMove(e){
+              if (flag){
+                ctx.putImageData(imageData,0,0);
+                rectWidth=(e.x - this.offsetLeft)-startX;
+                rectHeight=(e.y - this.offsetTop)-startY;
+                if(fillFlag==0){      
+                  ctx.strokeRect(startX,startY,rectWidth,rectHeight);
+                }else{
+                  ctx.fillRect(startX,startY,rectWidth,rectHeight);
+                  
+                }
+              }  
+            }  
+        }    
+
+
+
+
+        </script>
+
+ </body>
+</html>  
